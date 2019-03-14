@@ -1,14 +1,15 @@
-resource "aws_iam_role" "stg-portfolio-site-iam" {
-  name = "AWSCodePipelineServiceRole-us-east-1-portfolio-site"
+
+resource "aws_iam_role" "stg-portfolio-site-codepipeline-iam-role" {
+  # (resource arguments)
 }
 
-resource "aws_s3" "stg-portfolio-site-s3-artifact" {
+resource "aws_s3_bucket" "stg-portfolio-site-s3-artifact" {
 
 }
 
 resource "aws_codepipeline" "stg-portfolio-site" {
   name     = "stg.portfolio-site"
-  role_arn = "${aws_iam_role.stg-portfolio-site-iam.arn}"
+  role_arn = "${aws_iam_role.stg-portfolio-site-codepipeline-iam-role.arn}"
 
   artifact_store {
     location = "${aws_s3_bucket.stg-portfolio-site-s3-artifact.bucket}"
