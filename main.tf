@@ -4,8 +4,8 @@ resource "aws_iam_role" "stg-portfolio-site-codepipeline-iam-role" {
   path = "/service-role/"
 }
 
-resource "aws_s3_bucket" "stg-portfolio-site-s3-artifact" {
-
+resource "aws_s3_bucket" "codepipeline-us-east-1-725352146983" {
+  bucket = "codepipeline-us-east-1-725352146983"
 }
 
 resource "aws_codepipeline" "stg-portfolio-site" {
@@ -13,7 +13,7 @@ resource "aws_codepipeline" "stg-portfolio-site" {
   role_arn = "${aws_iam_role.stg-portfolio-site-codepipeline-iam-role.arn}"
 
   artifact_store {
-    location = "${aws_s3_bucket.stg-portfolio-site-s3-artifact.bucket}"
+    location = "${aws_s3_bucket.codepipeline-us-east-1-725352146983.bucket}"
     type     = "S3"
 
   }
@@ -27,12 +27,13 @@ resource "aws_codepipeline" "stg-portfolio-site" {
       owner            = "ThirdParty"
       provider         = "GitHub"
       version          = "1"
-      output_artifacts = ["test"]
+      output_artifacts = ["SourceArtifact"]
 
       configuration = {
-        Owner  = "my-organization"
-        Repo   = "test"
-        Branch = "master"
+        Owner  = "kter"
+        Repo   = "portfolio-site"
+        Branch = "staging"
+        PollForSourceChanges = "false"
       }
     }
   }
@@ -45,11 +46,13 @@ resource "aws_codepipeline" "stg-portfolio-site" {
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
-      input_artifacts = ["test"]
+      input_artifacts = ["SourceArtifact"]
       version         = "1"
+      output_artifacts = ["BuildArtifact"]
+
 
       configuration = {
-        ProjectName = "test"
+        ProjectName = "stg-prepare-s3-files"
       }
     }
   }
