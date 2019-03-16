@@ -13,12 +13,6 @@ resource "aws_ecs_task_definition" "sidebar_feed_generator" {
 resource "aws_ecs_cluster" "default" {
 }
 
-resource "aws_ecs_container_definition" "github_feed_generator" {
-}
-
-resource "aws_ecs_container_definition" "sidebar_feed_generator" {
-}
-
 resource "aws_iam_role" "stg-portfolio-site-codepipeline-iam-role" {
   "assume_role_policy" = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"codepipeline.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
   path = "/service-role/"
