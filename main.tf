@@ -1,5 +1,6 @@
 resource "aws_iam_role" "portfolio-site-html-updater" {
-  assume_role_policy = ""
+  assume_role_policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+  description = "Allows ECS tasks to call AWS services on your behalf."
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
