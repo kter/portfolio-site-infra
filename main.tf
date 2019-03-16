@@ -5,9 +5,11 @@ resource "aws_iam_role" "ecsTaskExecutionRole" {
 }
 
 resource "aws_ecs_task_definition" "github_feed_generator" {
+  container_definitions = "${file("github_feed_generator.json")}"
 }
 
 resource "aws_ecs_task_definition" "sidebar_feed_generator" {
+  container_definitions = "${file("sidebar_feed_generator.json")}"
 }
 
 resource "aws_ecs_cluster" "default" {
