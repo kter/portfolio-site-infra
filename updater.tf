@@ -14,7 +14,7 @@ resource "aws_iam_role" "ecsTaskExecutionRole" {
 
 resource "aws_ecs_task_definition" "github_feed_generator" {
   family = "github_feed_generator"
-  container_definitions = "${file("github_feed_generator.json")}"
+  container_definitions = "${file("container-definition/stg.github_feed_generator.json")}"
   task_role_arn = "arn:aws:iam::848738341109:role/portfolio-site-html-updater"
   execution_role_arn = "arn:aws:iam::848738341109:role/ecsTaskExecutionRole"
   cpu = "256"
@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "github_feed_generator" {
 
 resource "aws_ecs_task_definition" "sidebar_feed_generator" {
   family = "sidebar_feed_generator"
-  container_definitions = "${file("sidebar_feed_generator.json")}"
+  container_definitions = "${file("container-definition/stg.sidebar_feed_generator.json")}"
   task_role_arn = "arn:aws:iam::848738341109:role/portfolio-site-html-updater"
   execution_role_arn = "arn:aws:iam::848738341109:role/ecsTaskExecutionRole"
   cpu = "256"
