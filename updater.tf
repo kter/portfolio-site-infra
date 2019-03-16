@@ -3,37 +3,37 @@
 Staging
 ----------------------
 */
-resource "aws_iam_role" "portfolio-site-html-updater" {
+resource "aws_iam_role" "stg-portfolio-site-html-updater" {
   assume_role_policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
   description = "Allows ECS tasks to call AWS services on your behalf."
 }
 
-resource "aws_iam_role" "ecsTaskExecutionRole" {
+resource "aws_iam_role" "stg-ecsTaskExecutionRole" {
   assume_role_policy = "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
 }
 
-resource "aws_ecs_task_definition" "github_feed_generator" {
-  family = "github_feed_generator"
+resource "aws_ecs_task_definition" "stg_github_feed_generator" {
+  family = "stg_github_feed_generator"
   container_definitions = "${file("container-definition/stg.github_feed_generator.json")}"
-  task_role_arn = "arn:aws:iam::848738341109:role/portfolio-site-html-updater"
-  execution_role_arn = "arn:aws:iam::848738341109:role/ecsTaskExecutionRole"
+  task_role_arn = "arn:aws:iam::848738341109:role/stg-portfolio-site-html-updater"
+  execution_role_arn = "arn:aws:iam::848738341109:role/stg-ecsTaskExecutionRole"
   cpu = "256"
   memory = "512"
   requires_compatibilities = ["FARGATE"]
 }
 
-resource "aws_ecs_task_definition" "sidebar_feed_generator" {
-  family = "sidebar_feed_generator"
+resource "aws_ecs_task_definition" "stg_sidebar_feed_generator" {
+  family = "stg_sidebar_feed_generator"
   container_definitions = "${file("container-definition/stg.sidebar_feed_generator.json")}"
-  task_role_arn = "arn:aws:iam::848738341109:role/portfolio-site-html-updater"
-  execution_role_arn = "arn:aws:iam::848738341109:role/ecsTaskExecutionRole"
+  task_role_arn = "arn:aws:iam::848738341109:role/stg-portfolio-site-html-updater"
+  execution_role_arn = "arn:aws:iam::848738341109:role/stg-ecsTaskExecutionRole"
   cpu = "256"
   memory = "512"
   requires_compatibilities = ["FARGATE"]
 }
 
-resource "aws_ecs_cluster" "default" {
-  name = "default"
+resource "aws_ecs_cluster" "stg-default" {
+  name = "stg-default"
 }
 /*
 ----------------------
