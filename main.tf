@@ -1,3 +1,8 @@
+resource "aws_iam_role" "portfolio-site-html-updater" {
+}
+
+resource "aws_iam_role" "ecsTaskExecutionRole" {
+}
 
 resource "aws_iam_role" "stg-portfolio-site-codepipeline-iam-role" {
   "assume_role_policy" = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"codepipeline.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
