@@ -1,18 +1,23 @@
 resource "aws_iam_role" "portfolio-site-html-updater" {
+  assume_role_policy = ""
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
+  assume_role_policy = "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
 }
 
 resource "aws_ecs_task_definition" "github_feed_generator" {
+  family = "github_feed_generator"
   container_definitions = "${file("github_feed_generator.json")}"
 }
 
 resource "aws_ecs_task_definition" "sidebar_feed_generator" {
+  family = "sidebar_feed_generator"
   container_definitions = "${file("sidebar_feed_generator.json")}"
 }
 
 resource "aws_ecs_cluster" "default" {
+  name = "default"
 }
 
 resource "aws_iam_role" "stg-portfolio-site-codepipeline-iam-role" {
