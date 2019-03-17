@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "stg-ecs-event" {
 
 resource "aws_iam_role_policy" "stg-ecs-event" {
   name   = "stg-ecs-event"
-  role   = "${aws_iam_role.stg-portfolio-site-html-updater.id}"
+  role   = "${aws_iam_role.stg-ecs-event.id}"
   policy = "${data.aws_iam_policy_document.stg-ecs-event-policy.json}"
 }
 
