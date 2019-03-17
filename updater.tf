@@ -154,6 +154,13 @@ resource "aws_cloudwatch_event_target" "stg_github_feed_generator" {
   ecs_target = {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.stg_github_feed_generator.arn}"
+    launch_type = "FARGATE"
+    platform_version = "LATEST"
+    network_configuration = {
+      subnets = [ "subnet-0fecf70f7bb071262","subnet-0074039b2961cae11" ]
+      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      assign_public_ip = true
+    }
   }
 
   input = <<DOC
@@ -184,6 +191,13 @@ resource "aws_cloudwatch_event_target" "stg_sidebar_feed_generator" {
   ecs_target = {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.stg_sidebar_feed_generator.arn}"
+    launch_type = "FARGATE"
+    platform_version = "LATEST"
+    network_configuration = {
+      subnets = [ "subnet-0fecf70f7bb071262", "subnet-0074039b2961cae11" ]
+      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      assign_public_ip = true
+    }
   }
 
   input = <<DOC
@@ -366,6 +380,13 @@ resource "aws_cloudwatch_event_target" "github_feed_generator" {
   ecs_target = {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.github_feed_generator.arn}"
+    launch_type = "FARGATE"
+    platform_version = "LATEST"
+    network_configuration = {
+      subnets = [ "subnet-0fecf70f7bb071262", "subnet-0074039b2961cae11" ]
+      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      assign_public_ip = true
+    }
   }
 
   input = <<DOC
@@ -396,6 +417,13 @@ resource "aws_cloudwatch_event_target" "sidebar_feed_generator" {
   ecs_target = {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.sidebar_feed_generator.arn}"
+    launch_type = "FARGATE"
+    platform_version = "LATEST"
+    network_configuration = {
+      subnets = [ "subnet-0fecf70f7bb071262", "subnet-0074039b2961cae11" ]
+      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      assign_public_ip = true
+    }
   }
 
   input = <<DOC
