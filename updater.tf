@@ -224,6 +224,13 @@ DOC
     ignore_changes = ["ecs_target"]
   }
 }
+
+resource "aws_cloudwatch_log_group" "stg_github_feed_generator" {
+  name = "/ecs/stg_github_feed_generator"
+}
+resource "aws_cloudwatch_log_group" "stg_sidebar_feed_generator" {
+  name = "/ecs/stg_sidebar_feed_generator"
+}
 /*
 ----------------------
 Production
@@ -449,4 +456,11 @@ DOC
   lifecycle {
     ignore_changes = ["ecs_target"]
   }
+}
+
+resource "aws_cloudwatch_log_group" "github_feed_generator" {
+  name = "/ecs/github_feed_generator"
+}
+resource "aws_cloudwatch_log_group" "sidebar_feed_generator" {
+  name = "/ecs/sidebar_feed_generator"
 }
