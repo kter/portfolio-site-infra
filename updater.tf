@@ -4,12 +4,70 @@ Staging
 ----------------------
 */
 resource "aws_iam_role" "stg-portfolio-site-html-updater" {
-  assume_role_policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
-  description = "Allows ECS tasks to call AWS services on your behalf."
+  name               = "stg-portfolio-site-html-updater"
+  assume_role_policy = "${data.aws_iam_policy_document.stg-portfolio-site-html-updater.json}"
+}
+
+data "aws_iam_policy_document" "stg-portfolio-site-html-updater" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "stg-portfolio-site-html-updater" {
+  name   = "stg-portfolio-site-html-updater"
+  role   = "${aws_iam_role.stg-portfolio-site-html-updater.id}"
+  policy = "${data.aws_iam_policy_document.stg-portfolio-site-html-updater-policy.json}"
+}
+
+data "aws_iam_policy_document" "stg-portfolio-site-html-updater-policy" {
+        statement {
+            actions = [
+                "s3:*"
+            ]
+            resources = [ "*" ]
+        }
 }
 
 resource "aws_iam_role" "stg-ecsTaskExecutionRole" {
-  assume_role_policy = "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+  name               = "stg-ecsTaskExecutionRole"
+  assume_role_policy = "${data.aws_iam_policy_document.stg-ecsTaskExecutionRole.json}"
+}
+
+data "aws_iam_policy_document" "stg-ecsTaskExecutionRole" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "stg-ecsTaskExecutionRole" {
+  name   = "stg-ecsTaskExecutionRole"
+  role   = "${aws_iam_role.stg-ecsTaskExecutionRole.id}"
+  policy = "${data.aws_iam_policy_document.stg-ecsTaskExecutionRole-policy.json}"
+}
+
+data "aws_iam_policy_document" "stg-ecsTaskExecutionRole-policy" {
+    statement = {
+            actions = [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ]
+            resources = [ "*" ]
+    }
 }
 
 resource "aws_ecs_task_definition" "stg_github_feed_generator" {
@@ -43,7 +101,49 @@ resource "aws_cloudwatch_event_rule" "stg-blog-updater" {
   schedule_expression = "cron(0 * * * ? *)"
 }
 resource "aws_iam_role" "stg-ecs-event" {
-  assume_role_policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+  name               = "stg-ecs-event"
+  assume_role_policy = "${data.aws_iam_policy_document.stg-ecs-event.json}"
+}
+
+data "aws_iam_policy_document" "stg-ecs-event" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "stg-ecs-event" {
+  name   = "stg-ecs-event"
+  role   = "${aws_iam_role.stg-portfolio-site-html-updater.id}"
+  policy = "${data.aws_iam_policy_document.stg-ecs-event-policy.json}"
+}
+
+data "aws_iam_policy_document" "stg-ecs-event-policy" {
+  statement {
+            actions = [
+                "ecs:RunTask"
+            ]
+            resources = [
+                "*"
+            ]
+        }
+        statement {
+            actions = [ "iam:PassRole" ]
+            resources = [
+                "*"
+            ]
+            condition {
+                test = "StringLike"
+                variable = "iam:PassedToService"
+                values = [
+                "ecs-tasks.amazonaws.com"
+                ]
+            }
+        }
 }
 
 resource "aws_cloudwatch_event_target" "stg_github_feed_generator" {
@@ -116,12 +216,70 @@ Production
 ----------------------
 */
 resource "aws_iam_role" "portfolio-site-html-updater" {
-  assume_role_policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
-  description = "Allows ECS tasks to call AWS services on your behalf."
+  name               = "portfolio-site-html-updater"
+  assume_role_policy = "${data.aws_iam_policy_document.portfolio-site-html-updater.json}"
+}
+
+data "aws_iam_policy_document" "portfolio-site-html-updater" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "portfolio-site-html-updater" {
+  name   = "portfolio-site-html-updater"
+  role   = "${aws_iam_role.portfolio-site-html-updater.id}"
+  policy = "${data.aws_iam_policy_document.portfolio-site-html-updater-policy.json}"
+}
+
+data "aws_iam_policy_document" "portfolio-site-html-updater-policy" {
+        statement {
+            actions = [
+                "s3:*"
+            ]
+            resources = [ "*" ]
+        }
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  assume_role_policy = "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ecs-tasks.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+  name               = "ecsTaskExecutionRole"
+  assume_role_policy = "${data.aws_iam_policy_document.ecsTaskExecutionRole.json}"
+}
+
+data "aws_iam_policy_document" "ecsTaskExecutionRole" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "ecsTaskExecutionRole" {
+  name   = "ecsTaskExecutionRole"
+  role   = "${aws_iam_role.ecsTaskExecutionRole.id}"
+  policy = "${data.aws_iam_policy_document.ecsTaskExecutionRole-policy.json}"
+}
+
+data "aws_iam_policy_document" "ecsTaskExecutionRole-policy" {
+    statement = {
+            actions = [
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ]
+            resources = [ "*" ]
+    }
 }
 
 resource "aws_ecs_task_definition" "github_feed_generator" {
@@ -155,7 +313,49 @@ resource "aws_cloudwatch_event_rule" "blog-updater" {
   schedule_expression = "cron(0 * * * ? *)"
 }
 resource "aws_iam_role" "ecs-event" {
-  assume_role_policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+  name               = "ecs-event"
+  assume_role_policy = "${data.aws_iam_policy_document.ecs-event.json}"
+}
+
+data "aws_iam_policy_document" "ecs-event" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "ecs-event" {
+  name   = "ecs-event"
+  role   = "${aws_iam_role.ecs-event.id}"
+  policy = "${data.aws_iam_policy_document.ecs-event-policy.json}"
+}
+
+data "aws_iam_policy_document" "ecs-event-policy" {
+  statement {
+            actions = [
+                "ecs:RunTask"
+            ]
+            resources = [
+                "*"
+            ]
+        }
+        statement {
+            actions = [ "iam:PassRole" ]
+            resources = [
+                "*"
+            ]
+            condition {
+                test = "StringLike"
+                variable = "iam:PassedToService"
+                values = [
+                "ecs-tasks.amazonaws.com"
+                ]
+            }
+        }
 }
 
 resource "aws_cloudwatch_event_target" "github_feed_generator" {
