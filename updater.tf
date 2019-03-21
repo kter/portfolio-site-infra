@@ -98,7 +98,7 @@ resource "aws_ecs_cluster" "stg-default" {
 
 resource "aws_cloudwatch_event_rule" "stg-blog-updater" {
   name        = "stg-blog-updater"
-  schedule_expression = "cron(0 * * * ? *)"
+  schedule_expression = "cron(0/3 * * * ? *)"
 }
 resource "aws_iam_role" "stg-ecs-event" {
   name               = "stg-ecs-event"
@@ -157,8 +157,8 @@ resource "aws_cloudwatch_event_target" "stg_github_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "subnet-0fecf70f7bb071262","subnet-0074039b2961cae11" ]
-      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
+      security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
   }
@@ -194,8 +194,8 @@ resource "aws_cloudwatch_event_target" "stg_sidebar_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "subnet-0fecf70f7bb071262", "subnet-0074039b2961cae11" ]
-      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
+      security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
   }
@@ -325,8 +325,8 @@ resource "aws_ecs_task_definition" "sidebar_feed_generator" {
   network_mode = "awsvpc"
 }
 
-resource "aws_ecs_cluster" "default" {
-  name = "default"
+resource "aws_ecs_cluster" "blog-updater" {
+  name = "blog-updater"
 }
 
 resource "aws_cloudwatch_event_rule" "blog-updater" {
@@ -380,7 +380,7 @@ data "aws_iam_policy_document" "ecs-event-policy" {
 }
 
 resource "aws_cloudwatch_event_target" "github_feed_generator" {
-  arn       = "${aws_ecs_cluster.default.arn}"
+  arn       = "${aws_ecs_cluster.blog-updater.arn}"
   rule      = "${aws_cloudwatch_event_rule.blog-updater.name}"
   role_arn  = "${aws_iam_role.ecs-event.arn}"
 
@@ -390,8 +390,8 @@ resource "aws_cloudwatch_event_target" "github_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "subnet-0fecf70f7bb071262", "subnet-0074039b2961cae11" ]
-      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
+      security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
   }
@@ -417,7 +417,7 @@ DOC
   }
 }
 resource "aws_cloudwatch_event_target" "sidebar_feed_generator" {
-  arn       = "${aws_ecs_cluster.default.arn}"
+  arn       = "${aws_ecs_cluster.blog-updater.arn}"
   rule      = "${aws_cloudwatch_event_rule.blog-updater.name}"
   role_arn  = "${aws_iam_role.ecs-event.arn}"
 
@@ -427,8 +427,8 @@ resource "aws_cloudwatch_event_target" "sidebar_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "subnet-0fecf70f7bb071262", "subnet-0074039b2961cae11" ]
-      security_groups = [ "sg-0ecccf72c37d374ec" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
+      security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
   }
