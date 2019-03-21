@@ -1,3 +1,13 @@
+variable "root_segment" {}
+variable "public_segment1" {}
+variable "public_segment2" {}
+variable "private_segment1" {}
+variable "private_segment2" {}
+variable "public_segment1_az" {}
+variable "public_segment2_az" {}
+variable "private_segment1_az" {}
+variable "private_segment2_az" {}
+
 resource "aws_vpc" "vpc_main" {
     cidr_block = "${var.root_segment}"
 }
