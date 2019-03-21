@@ -157,7 +157,7 @@ resource "aws_cloudwatch_event_target" "stg_github_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "${aws_subnet.vpc_main-private-subnet1.id}", "${aws_subnet.vpc_main-private-subnet2.id}" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
@@ -194,7 +194,7 @@ resource "aws_cloudwatch_event_target" "stg_sidebar_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "${aws_subnet.vpc_main-private-subnet1.id}", "${aws_subnet.vpc_main-private-subnet2.id}" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
@@ -390,7 +390,7 @@ resource "aws_cloudwatch_event_target" "github_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "${aws_subnet.vpc_main-private-subnet1.id}", "${aws_subnet.vpc_main-private-subnet2.id}" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
@@ -427,7 +427,7 @@ resource "aws_cloudwatch_event_target" "sidebar_feed_generator" {
     launch_type = "FARGATE"
     platform_version = "LATEST"
     network_configuration = {
-      subnets = [ "${aws_subnet.vpc_main-private-subnet1.id}", "${aws_subnet.vpc_main-private-subnet2.id}" ]
+      subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
     }
