@@ -98,7 +98,7 @@ resource "aws_ecs_cluster" "stg-default" {
 
 resource "aws_cloudwatch_event_rule" "stg-blog-updater" {
   name        = "stg-blog-updater"
-  schedule_expression = "cron(0 * * * ? *)"
+  schedule_expression = "cron(0/3 * * * ? *)"
 }
 resource "aws_iam_role" "stg-ecs-event" {
   name               = "stg-ecs-event"
