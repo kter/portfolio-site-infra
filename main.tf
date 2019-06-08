@@ -1,5 +1,10 @@
 variable "github_token" {}
 
+provider "aws" {
+  profile = "private"
+  region = "us-east-1"
+}
+
 resource "aws_iam_role" "stg-portfolio-site-codepipeline-iam-role" {
   name               = "stg-portfolio-site-codepipeline-iam-role"
   assume_role_policy = "${data.aws_iam_policy_document.stg-portfolio-site-codepipeline-iam-role.json}"
