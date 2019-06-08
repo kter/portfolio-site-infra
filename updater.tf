@@ -57,7 +57,7 @@ resource "aws_iam_role_policy" "stg-ecsTaskExecutionRole" {
 }
 
 data "aws_iam_policy_document" "stg-ecsTaskExecutionRole-policy" {
-    statement = {
+    statement {
             actions = [
                 "ecr:GetAuthorizationToken",
                 "ecr:BatchCheckLayerAvailability",
@@ -98,6 +98,7 @@ resource "aws_ecs_cluster" "stg-default" {
 
 resource "aws_cloudwatch_event_rule" "stg-blog-updater" {
   name        = "stg-blog-updater"
+  is_enabled = false
   schedule_expression = "cron(0/3 * * * ? *)"
 }
 resource "aws_iam_role" "stg-ecs-event" {
@@ -151,12 +152,12 @@ resource "aws_cloudwatch_event_target" "stg_github_feed_generator" {
   rule      = "${aws_cloudwatch_event_rule.stg-blog-updater.name}"
   role_arn  = "${aws_iam_role.stg-ecs-event.arn}"
 
-  ecs_target = {
+  ecs_target {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.stg_github_feed_generator.arn}"
     launch_type = "FARGATE"
     platform_version = "LATEST"
-    network_configuration = {
+    network_configuration {
       subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
@@ -188,12 +189,12 @@ resource "aws_cloudwatch_event_target" "stg_sidebar_feed_generator" {
   rule      = "${aws_cloudwatch_event_rule.stg-blog-updater.name}"
   role_arn  = "${aws_iam_role.stg-ecs-event.arn}"
 
-  ecs_target = {
+  ecs_target {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.stg_sidebar_feed_generator.arn}"
     launch_type = "FARGATE"
     platform_version = "LATEST"
-    network_configuration = {
+    network_configuration {
       subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
@@ -290,7 +291,7 @@ resource "aws_iam_role_policy" "ecsTaskExecutionRole" {
 }
 
 data "aws_iam_policy_document" "ecsTaskExecutionRole-policy" {
-    statement = {
+    statement {
             actions = [
                 "ecr:GetAuthorizationToken",
                 "ecr:BatchCheckLayerAvailability",
@@ -384,12 +385,12 @@ resource "aws_cloudwatch_event_target" "github_feed_generator" {
   rule      = "${aws_cloudwatch_event_rule.blog-updater.name}"
   role_arn  = "${aws_iam_role.ecs-event.arn}"
 
-  ecs_target = {
+  ecs_target {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.github_feed_generator.arn}"
     launch_type = "FARGATE"
     platform_version = "LATEST"
-    network_configuration = {
+    network_configuration {
       subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
@@ -420,13 +421,14 @@ resource "aws_cloudwatch_event_target" "sidebar_feed_generator" {
   arn       = "${aws_ecs_cluster.blog-updater.arn}"
   rule      = "${aws_cloudwatch_event_rule.blog-updater.name}"
   role_arn  = "${aws_iam_role.ecs-event.arn}"
+  target_id = "running-sidebar_feed_generator"
 
-  ecs_target = {
+  ecs_target {
     task_count          = 1
     task_definition_arn = "${aws_ecs_task_definition.sidebar_feed_generator.arn}"
     launch_type = "FARGATE"
     platform_version = "LATEST"
-    network_configuration = {
+    network_configuration {
       subnets = [ "${aws_subnet.vpc_main-public-subnet1.id}", "${aws_subnet.vpc_main-public-subnet2.id}" ]
       security_groups = [ "${aws_security_group.main_sg.id}" ]
       assign_public_ip = true
