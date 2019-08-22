@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+  variables:
+     BUCKET_NAME: "tomohiko.io"
+  #parameter-store:
+     # key: "value"
+     # key: "value"
+
+phases:
+  #install:
+    #commands:
+      # - command
+      # - command
+  #pre_build:
+    #commands:
+      # - command
+      # - command
+  build:
+    commands:
+        - aws s3 cp index.html s3://$BUCKET_NAME
+        - aws s3 cp css/main.css s3://$BUCKET_NAME/css/
+        
+  #post_build:
+    #commands:
+      # - command
+#artifacts:
+  #files:
+    # - location
+    # - location
+  #name: $(date +%Y-%m-%d)
+  #discard-paths: yes
+  #base-directory: location
+#cache:
+  #paths:
+    # - paths

@@ -242,7 +242,7 @@ resource "aws_codebuild_project" "stg-prepare-s3-files" {
   }
   
   source {
-    buildspec = "version: 0.2\n\nenv:\n  variables:\n     BUCKET_NAME: \"stg.tomohiko.io\"\n  #parameter-store:\n     # key: \"value\"\n     # key: \"value\"\n\nphases:\n  #install:\n    #commands:\n      # - command\n      # - command\n  #pre_build:\n    #commands:\n      # - command\n      # - command\n  build:\n    commands:\n        - aws s3 cp index.html s3://$BUCKET_NAME\n        - aws s3 cp css/main.css s3://$BUCKET_NAME/css/\n        - aws s3 cp robots.txt s3://$BUCKET_NAME\n  #post_build:\n    #commands:\n      # - command\n#artifacts:\n  #files:\n    # - location\n    # - location\n  #name: $(date +%Y-%m-%d)\n  #discard-paths: yes\n  #base-directory: location\n#cache:\n  #paths:\n    # - paths\n"
+    buildspec = "${file("buildspec/prd-prepare-s3-files.yml")}"
     git_clone_depth = 0
     insecure_ssl = false
     report_build_status = false
@@ -561,7 +561,7 @@ resource "aws_codebuild_project" "prd-prepare-s3-files" {
   }
   
   source {
-    buildspec = "version: 0.2\n\nenv:\n  variables:\n     BUCKET_NAME: \"tomohiko.io\"\n  #parameter-store:\n     # key: \"value\"\n     # key: \"value\"\n\nphases:\n  #install:\n    #commands:\n      # - command\n      # - command\n  #pre_build:\n    #commands:\n      # - command\n      # - command\n  build:\n    commands:\n        - aws s3 cp index.html s3://$BUCKET_NAME\n        - aws s3 cp css/main.css s3://$BUCKET_NAME/css/\n        \n  #post_build:\n    #commands:\n      # - command\n#artifacts:\n  #files:\n    # - location\n    # - location\n  #name: $(date +%Y-%m-%d)\n  #discard-paths: yes\n  #base-directory: location\n#cache:\n  #paths:\n    # - paths\n#08221135"
+    buildspec = "${file("buildspec/stg-prepare-s3-files.yml")}"
     git_clone_depth = 0
     insecure_ssl = false
     report_build_status = false
