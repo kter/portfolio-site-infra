@@ -288,8 +288,7 @@ data "aws_iam_policy_document" "codebuild-stg-prepare-s3-files-service-role-poli
     ]
 
     resources = [
-        "arn:aws:logs:us-east-1::log-group:/aws/codebuild/stg-prepare-s3-files",
-        "arn:aws:logs:us-east-1::log-group:/aws/codebuild/stg-prepare-s3-files:*"
+        "arn:aws:logs:us-east-1:*:log-group:/aws/codebuild/stg-prepare-s3-files:log-stream:*",
     ]
   }
 
@@ -608,8 +607,7 @@ data "aws_iam_policy_document" "codebuild-prd-prepare-s3-files-service-role-poli
     ]
 
     resources = [
-        "arn:aws:logs:us-east-1::log-group:/aws/codebuild/prd-prepare-s3-files",
-        "arn:aws:logs:us-east-1::log-group:/aws/codebuild/prd-prepare-s3-files:*"
+        "arn:aws:logs:us-east-1:*:log-group:/aws/codebuild/prd-prepare-s3-files:log-stream:*",
     ]
   }
 
