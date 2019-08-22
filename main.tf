@@ -530,8 +530,120 @@ resource "aws_codepipeline" "portfolio-site" {
 
 
       configuration = {
-        ProjectName = "prepare-s3-files"
+        ProjectName = "prd-prepare-s3-files"
       }
     }
   }
 }
+
+resource "aws_codebuild_project" "prd-prepare-s3-files" {
+  service_role   = "${aws_iam_role.codebuild-prd-prepare-s3-files-service-role.arn}"
+  name = "prd-prepare-s3-files"
+  
+  artifacts {
+    encryption_disabled = false
+    location = ""
+    name = "prd-prepare-s3-files"
+    packaging = "NONE"
+    path = ""
+    type = "CODEPIPELINE"
+  }
+  
+  cache {
+    type = "NO_CACHE"
+  }
+  
+  environment {
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image = "aws/codebuild/python:3.7.1"
+    image_pull_credentials_type = "CODEBUILD"
+    privileged_mode = false
+    type = "LINUX_CONTAINER"
+  }
+  
+  source {
+    buildspec = "version: 0.2\n\nenv:\n  variables:\n     BUCKET_NAME: \"tomohiko.io\"\n  #parameter-store:\n     # key: \"value\"\n     # key: \"value\"\n\nphases:\n  #install:\n    #commands:\n      # - command\n      # - command\n  #pre_build:\n    #commands:\n      # - command\n      # - command\n  build:\n    commands:\n        - aws s3 cp index.html s3://$BUCKET_NAME\n        - aws s3 cp css/main.css s3://$BUCKET_NAME/css\n        \n  #post_build:\n    #commands:\n      # - command\n#artifacts:\n  #files:\n    # - location\n    # - location\n  #name: $(date +%Y-%m-%d)\n  #discard-paths: yes\n  #base-directory: location\n#cache:\n  #paths:\n    # - paths\n#08221135"
+    git_clone_depth = 0
+    insecure_ssl = false
+    report_build_status = false
+    type = "CODEPIPELINE"
+  }
+}
+
+# --------------
+# CodeBuild IAM
+# --------------
+
+resource "aws_iam_role_policy" "codebuild-prd-prepare-s3-files-service-role" {
+  name   = "codebuild-prd-prepare-s3-files-service-role"
+  role   = "${aws_iam_role.codebuild-prd-prepare-s3-files-service-role.id}"
+  policy = "${data.aws_iam_policy_document.codebuild-prd-prepare-s3-files-service-role-policy.json}"
+}
+
+resource "aws_iam_role" "codebuild-prd-prepare-s3-files-service-role" {
+  name               = "codebuild-prd-prepare-s3-files-service-role"
+  assume_role_policy = "${data.aws_iam_policy_document.codebuild-prd-prepare-s3-files-service-role-policy-document.json}"
+  # path = "/service-role/"
+}
+
+data "aws_iam_policy_document" "codebuild-prd-prepare-s3-files-service-role-policy-document" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["codebuild.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "codebuild-prd-prepare-s3-files-service-role-policy" {
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+
+    resources = [
+        "arn:aws:logs:us-east-1::log-group:/aws/codebuild/prd-prepare-s3-files",
+        "arn:aws:logs:us-east-1::log-group:/aws/codebuild/prd-prepare-s3-files:*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:GetBucketAcl",
+      "s3:GetBucketLocation"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+                    "codedeploy:CreateDeployment",
+                    "codedeploy:GetApplicationRevision",
+                    "codedeploy:GetDeployment",
+                    "codedeploy:GetDeploymentConfig",
+                    "codedeploy:RegisterApplicationRevision"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
+# --------------
+# CodeBuild IAM
+# --------------
