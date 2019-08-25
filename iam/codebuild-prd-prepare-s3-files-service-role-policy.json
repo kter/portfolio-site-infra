@@ -1,0 +1,39 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": "arn:aws:logs:us-east-1:*:log-group:/aws/codebuild/prd-prepare-s3-files:log-stream:*"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObjectVersion",
+                "s3:GetObject",
+                "s3:GetBucketLocation",
+                "s3:GetBucketAcl"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "codedeploy:RegisterApplicationRevision",
+                "codedeploy:GetDeploymentConfig",
+                "codedeploy:GetDeployment",
+                "codedeploy:GetApplicationRevision",
+                "codedeploy:CreateDeployment"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
